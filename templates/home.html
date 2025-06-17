@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <title>Big Mart Sales Prediction 🛒</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/Style.css')}}">
+
+    <style>
+        body {
+            background: #f2f2f2;
+            background: linear-gradient(to right, #ffefba, #ffffff);
+            font-family: 'Arial', sans-serif;
+        }
+
+        h1 {
+            color: #ff5722;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        footer a {
+            color: #ef0303;
+        }
+
+        footer a:hover {
+            color: #fff;
+        }
+
+        .form-group input,
+        .form-group select {
+            background-color: #ffffff;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #ff5722;
+            box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+        }
+
+        .btn-primary {
+            background-color: #ff5722;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover {
+            background-color: #e64a19;
+        }
+
+        .btn-danger {
+            background-color: #e57373;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        .btn-danger:hover {
+            background-color: #f44336;
+        }
+
+        .centerdiv {
+            height: 15vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .centerdiv a {
+            height: 50px;
+            width: 50px;
+            background-color: #f5f6fa;
+            border-radius: 50%;
+            text-align: center;
+            margin: 10px;
+            line-height: 50px;
+            box-shadow: 1px 4px 2px 2px #dcdde1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .centerdiv a i {
+            transition: all 0.3s linear;
+        }
+
+        .centerdiv a:hover i {
+            transform: scale(1.5);
+            color: #f5f6fa;
+        }
+
+        .prediction-box {
+            text-align: center;
+            font-size: 24px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 40px;
+            font-weight: bold;
+        }
+
+        .prediction-box h4 {
+            font-size: 1.5rem;
+            color: #ff5722;
+        }
+
+        .prediction-box p {
+            font-size: 1.25rem;
+            color: #333;
+        }
+
+        .prediction-box a {
+            background-color: #ff5722;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .prediction-box a:hover {
+            background-color: #e64a19;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner-border {
+            width: 50px;
+            height: 50px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Big Mart Sales Prediction 🛒</h1>
+    <br>
+
+    <div class="wrapper">
+        <div class="container my-5">
+            <div class="row">
+                <div class="col-md-8 col-sm-6 mx-auto">
+                    <form action="/predict" method="post" id="predictionForm">
+
+                        <div class="form-group">
+                            <input type="text" name="item_weight" class="form-control" required placeholder="e.g. 15.5">
+                            <label>Enter Item Weight 📦</label>
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control" name="item_fat_content" required>
+                                <option value="" selected>Item Fat Content 🍏</option>
+                                <option value="1">Low Fat 🥦</option>
+                                <option value="2">Regular 🍔</option>
+                                <option value="0">High Fat 🍕</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" name="item_visibility" class="form-control" required placeholder="e.g. 0.10">
+                            <label>Enter Item Visibility 👀</label>
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control" name="item_type" required>
+                                <option value="" selected>Item Type 🍽️</option>
+                                <option value="0">Baking Goods 🍞</option>
+                                <option value="1">Breads 🍞</option>
+                                <option value="2">Breakfast 🥞</option>
+                                <option value="3">Canned 🥫</option>
+                                <option value="4">Dairy 🧀</option>
+                                <option value="5">Frozen Foods ❄️</option>
+                                <option value="6">Fruits and Vegetables 🍎</option>
+                                <option value="7">Hard Drinks 🍻</option>
+                                <option value="8">Health and Hygiene 💪</option>
+                                <option value="9">Household 🏠</option>
+                                <option value="10">Meat 🥩</option>
+                                <option value="11">Others 🔄</option>
+                                <option value="12">Seafood 🦞</option>
+                                <option value="13">Snack Foods 🍿</option>
+                                <option value="14">Soft Drinks 🥤</option>
+                                <option value="15">Starchy Foods 🍠</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" name="item_mrp" class="form-control" required placeholder="e.g. 200">
+                            <label>Enter Item MRP 💵</label>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" name="outlet_establishment_year" class="form-control" required placeholder="e.g. 2005">
+                            <label>Outlet Establishment Year 📅</label>
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control" name="outlet_size" required>
+                                <option value="" selected>Outlet Size 🏪</option>
+                                <option value="0">High 🏢</option>
+                                <option value="1">Medium 🏬</option>
+                                <option value="2">Small 🏬</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control" name="outlet_location_type" required>
+                                <option value="" selected>Outlet Location Type 📍</option>
+                                <option value="0">Tier 1 🏙️</option>
+                                <option value="1">Tier 2 🏘️</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <select class="form-control" name="outlet_type" required>
+                                <option value="" selected>Outlet Type 🏪</option>
+                                <option value="0">Grocery Store 🛒</option>
+                                <option value="1">Supermarket 🏢</option>
+                                <option value="2">Hypermarket 🏪</option>
+                            </select>
+                        </div>
+
+                        <!-- Extra Features Section -->
+                        <div class="form-group">
+                            <input type="number" step="0.01" name="extra_feature_1" class="form-control"
+                                required placeholder="e.g. Extra Feature 1">
+                            <label>Extra Feature 1 🔧</label>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="number" step="0.01" name="extra_feature_2" class="form-control"
+                                required placeholder="e.g. Extra Feature 2">
+                            <label>Extra Feature 2 🧰</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Predict Sales</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if prediction %}
+        <div class="prediction-box">
+            <h4>Predicted Sales 📊</h4>
+            <p>The predicted sales for the given product are ₹ {{ prediction }}</p>
+            <a href="/" class="btn btn-danger">Go Back</a>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>
