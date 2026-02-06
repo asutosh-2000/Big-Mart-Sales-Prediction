@@ -256,13 +256,14 @@
             </div>
         </div>
 
-        {% if prediction %}
-        <div class="prediction-box">
-            <h4>Predicted Sales 📊</h4>
-            <p>The predicted sales for the given product are ₹ {{ prediction }}</p>
-            <a href="/" class="btn btn-danger">Go Back</a>
-        </div>
-        {% endif %}
+            {% if prediction is not none %}
+            <div class="prediction-box">
+                <h4>Predicted Sales 📊</h4>
+                <p>The predicted sales for the given product are ₹ {{ prediction }}</p>
+                <a href="/" class="btn btn-danger">Go Back</a>
+            </div>
+            {% endif %}
+
     </div>
 
 </body>
